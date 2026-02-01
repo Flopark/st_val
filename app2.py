@@ -34,15 +34,15 @@ st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 # Mets ici les NOMS EXACTS de tes fichiers qui sont dans le dossier "photos"
 # Tu peux mélanger jpg, png, jpeg...
 LEFT_IMAGES_FILES = [
-    "photo1.jpg", 
-    "photo2.jpg",
-    "photo3.jpg"
+    "image.jpg", 
+    "2.jpg",
+    "3.jpg"
 ]
 
 RIGHT_IMAGES_FILES = [
-    "photo4.jpg",
-    "photo5.jpg",
-    "photo6.jpg"
+    "4.jpg",
+    "5.jpg",
+    "6.jpg"
 ]
 
 # Fonction pour convertir l'image locale en code base64 pour le HTML
@@ -286,3 +286,4 @@ html_code = f"""
 """
 
 components.html(html_code, height=850, scrolling=False)
+
