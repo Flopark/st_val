@@ -222,7 +222,7 @@ html_code = f"""
         </div>
 
         <div id="success-message">
-            MOooohh moi aussi je t'aime mee chaton ! 💖💖<br>
+            MOooohh moi aussi je t'aime mme chaton ! 💖💖<br>
             <span style="font-size: 1.5rem">(De toutes façon tu n'avais pas le choix) </span>
         </div>
     </div>
@@ -285,6 +285,7 @@ html_code = f"""
 """
 
 components.html(html_code, height=850, scrolling=False)
+
 
 
 
