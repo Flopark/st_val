@@ -35,15 +35,15 @@ st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 # Liste tes fichiers qui sont directement à côté de app.py sur GitHub
 # Remplace par les noms EXACTS de tes photos (attention aux majuscules)
 LEFT_IMAGES_FILES = [
-    "photo1.jpg", 
-    "photo2.jpg",
-    "photo3.jpg"
+    "image.jpg", 
+    "2.jpg",
+    "3.jpg"
 ]
 
 RIGHT_IMAGES_FILES = [
-    "photo4.jpg",
-    "photo5.jpg",
-    "photo6.jpg"
+    "4.jpg",
+    "5.jpg",
+    "6.jpg"
 ]
 
 # Fonction pour lire les images locales et les convertir en base64
@@ -333,6 +333,7 @@ html_code = f"""
 # Affichage du composant HTML
 # Height augmenté à 900 pour être sûr de bien couvrir les grands écrans
 components.html(html_code, height=900, scrolling=False)
+
 
 
 
