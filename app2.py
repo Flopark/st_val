@@ -6,6 +6,8 @@ Created on Thu Dec 25 00:04:15 2025
 """
 import streamlit as st
 import streamlit.components.v1 as components
+import base64
+import os
 
 # Configuration de la page
 st.set_page_config(
@@ -15,7 +17,6 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# On cache les éléments de l'interface Streamlit
 hide_streamlit_style = """
             <style>
             #MainMenu {visibility: hidden;}
@@ -26,47 +27,133 @@ hide_streamlit_style = """
             """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
-# Le code HTML/JS/CSS
-html_code = """
+# ==========================================
+# 📸 CONFIGURATION DES PHOTOS LOCALES 📸
+# ==========================================
+
+# Mets ici les NOMS EXACTS de tes fichiers qui sont dans le dossier "photos"
+# Tu peux mélanger jpg, png, jpeg...
+LEFT_IMAGES_FILES = [
+    "photo1.jpg", 
+    "photo2.jpg",
+    "photo3.jpg"
+]
+
+RIGHT_IMAGES_FILES = [
+    "photo4.jpg",
+    "photo5.jpg",
+    "photo6.jpg"
+]
+
+# Fonction pour convertir l'image locale en code base64 pour le HTML
+def get_base64_image(image_filename):
+    folder = "photos"  # Le nom de ton dossier
+    file_path = os.path.join(folder, image_filename)
+    
+    # Vérifie si le fichier existe pour éviter les erreurs
+    if not os.path.exists(file_path):
+        return None
+    
+    with open(file_path, "rb") as f:
+        data = f.read()
+    
+    # On devine l'extension pour le format
+    ext = image_filename.split('.')[-1]
+    encoded = base64.b64encode(data).decode()
+    return f"data:image/{ext};base64,{encoded}"
+
+# Génération du HTML pour les images
+def generate_img_tags(filenames):
+    html = ""
+    for filename in filenames:
+        img_src = get_base64_image(filename)
+        if img_src:
+            html += f'<img src="{img_src}" class="side-photo">'
+    return html
+
+# On prépare le contenu
+left_html_content = generate_img_tags(LEFT_IMAGES_FILES)
+right_html_content = generate_img_tags(RIGHT_IMAGES_FILES)
+
+# ==========================================
+
+html_code = f"""
 <!DOCTYPE html>
 <html>
 <head>
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@500&display=swap" rel="stylesheet">
     <style>
-        /* On empêche le scroll pour que tout reste propre */
-        body {
-            background-color: #ffe4e1; /* Rose pastel */
+        body {{
+            background-color: #ffe4e1;
             height: 100vh;
             margin: 0;
             overflow: hidden; 
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
             font-family: 'Pacifico', cursive;
-            user-select: none; /* Empêche de sélectionner le texte */
-        }
+            user-select: none;
+        }}
 
-        h1 {
-            color: #d65db1;
-            font-size: 3rem; /* Un peu plus petit pour le mobile */
-            text-shadow: 2px 2px #ffc1e3;
-            margin-bottom: 40px;
-            text-align: center;
-            z-index: 10;
-        }
+        /* --- STYLES GALERIES --- */
+        .gallery {{
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            width: 220px; /* Un peu plus large pour bien voir */
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding: 20px;
+            overflow-y: auto;
+            z-index: 1;
+            scrollbar-width: none; 
+            -ms-overflow-style: none;
+        }}
+        .gallery::-webkit-scrollbar {{ display: none; }}
 
-        .container {
+        .gallery-left {{ left: 0; }}
+        .gallery-right {{ right: 0; }}
+
+        .side-photo {{
+            width: 100%;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border: 4px solid white;
+            transition: transform 0.3s;
+            object-fit: cover;
+        }}
+        
+        .side-photo:hover {{
+            transform: scale(1.05) rotate(2deg);
+            z-index: 2;
+        }}
+
+        /* --- JEU CENTRAL --- */
+        .game-container {{
             position: relative;
+            z-index: 10;
+            text-align: center;
             width: 100%;
             height: 100%;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-        }
+        }}
 
-        button {
+        h1 {{
+            color: #d65db1;
+            font-size: 3.5rem;
+            text-shadow: 2px 2px #ffc1e3;
+            margin-bottom: 40px;
+            background-color: rgba(255, 228, 225, 0.85);
+            padding: 15px 40px;
+            border-radius: 50px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }}
+
+        button {{
             font-family: 'Quicksand', sans-serif;
             font-size: 1.5rem;
             padding: 15px 40px;
@@ -74,57 +161,59 @@ html_code = """
             border-radius: 50px;
             cursor: pointer;
             font-weight: bold;
-            transition: all 0.1s ease; /* Transition très rapide */
-        }
+            transition: all 0.1s ease;
+        }}
 
-        /* Le bouton OUI reste centré et stable */
-        #yesBtn {
+        #yesBtn {{
             background-color: #ff69b4; 
             color: white;
             box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);
-            z-index: 5;
-            margin-bottom: 20px; /* Espace si les boutons sont l'un sous l'autre */
-        }
+            margin-bottom: 20px;
+        }}
+        
+        #yesBtn:hover {{ transform: scale(1.1); background-color: #ff1493; }}
 
-        #yesBtn:hover {
-            transform: scale(1.1);
-            background-color: #ff1493;
-        }
-
-        /* Le bouton NON */
-        #noBtn {
+        #noBtn {{
             background-color: white;
             color: #ff69b4;
             border: 2px solid #ff69b4;
-            position: absolute; /* Absolu pour pouvoir bouger partout */
-            z-index: 5;
-        }
+            position: absolute; 
+        }}
 
-        /* Message final */
-        #success-message {
+        #success-message {{
             display: none;
             color: #d65db1;
             font-size: 2.5rem;
             text-align: center;
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
             animation: fadeIn 1s;
-            z-index: 20;
-        }
+        }}
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .initial-position {{ margin-top: 20px; }}
 
-        /* Conteneur pour centrer le bouton NON au départ */
-        .initial-position {
-            margin-top: 20px;
-        }
+        @keyframes fadeIn {{
+            from {{ opacity: 0; transform: translateY(20px); }}
+            to {{ opacity: 1; transform: translateY(0); }}
+        }}
+
+        /* MOBILE : On cache les photos */
+        @media (max-width: 900px) {{
+            .gallery {{ display: none; }}
+            h1 {{ font-size: 2rem; padding: 10px 20px; }}
+        }}
 
     </style>
 </head>
 <body>
 
-    <div class="container">
+    <div class="gallery gallery-left">
+        {left_html_content}
+    </div>
+
+    <div class="game-container">
         <h1 id="main-text">Would you be my Valentine? 💖</h1>
 
         <button id="yesBtn" onclick="sheSaidYes()">YES 🥰</button>
@@ -135,8 +224,12 @@ html_code = """
 
         <div id="success-message">
             Yayyy !! 💖 Je t'aime !<br>
-            <span style="font-size: 1.5rem">C'était le seul choix possible 😎</span>
+            <span style="font-size: 1.5rem">Je savais que tu dirais oui 😎</span>
         </div>
+    </div>
+
+    <div class="gallery gallery-right">
+        {right_html_content}
     </div>
 
     <script>
@@ -144,54 +237,52 @@ html_code = """
         const yesBtn = document.getElementById('yesBtn');
         const mainText = document.getElementById('main-text');
         const successMsg = document.getElementById('success-message');
+        const galleries = document.querySelectorAll('.gallery');
         
         let firstMove = true;
 
-        function moveButton() {
-            // Si c'est le premier mouvement, on change la position en 'absolute' par rapport au body
-            if (firstMove) {
-                noBtn.style.position = 'fixed'; // Fixed garantit que c'est relatif à la fenêtre vue
+        function moveButton() {{
+            if (firstMove) {{
+                noBtn.style.position = 'fixed';
                 firstMove = false;
-            }
+            }}
 
-            // Récupérer la taille de la fenêtre
             const windowWidth = window.innerWidth;
             const windowHeight = window.innerHeight;
-
-            // Récupérer la taille du bouton
             const btnWidth = noBtn.offsetWidth;
             const btnHeight = noBtn.offsetHeight;
 
-            // Calculer la zone libre (fenêtre - taille bouton - petite marge de sécurité de 20px)
-            const maxX = windowWidth - btnWidth - 20;
+            // Marge latérale pour éviter les photos (approx 240px)
+            let sideMargin = windowWidth > 900 ? 240 : 20;
+
+            const maxX = windowWidth - btnWidth - sideMargin;
             const maxY = windowHeight - btnHeight - 20;
 
-            // Générer des coordonnées aléatoires dans cette zone
-            const randomX = Math.random() * maxX;
-            const randomY = Math.random() * maxY;
+            // Calcul pour éviter la galerie de gauche aussi
+            const minX = sideMargin; 
 
-            // Appliquer les nouvelles positions (avec une marge min de 10px pour ne pas coller au bord gauche/haut)
-            noBtn.style.left = Math.max(10, randomX) + 'px';
-            noBtn.style.top = Math.max(10, randomY) + 'px';
-        }
+            const randomX = Math.max(minX, Math.random() * maxX);
+            const randomY = Math.max(20, Math.random() * maxY);
 
-        function sheSaidYes() {
-            // Cacher les boutons et le texte
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+        }}
+
+        function sheSaidYes() {{
             noBtn.style.display = 'none';
             yesBtn.style.display = 'none';
             mainText.style.display = 'none';
             
-            // Afficher le message
-            successMsg.style.display = 'block';
+            // On cache les galeries
+            galleries.forEach(g => g.style.display = 'none');
             
-            // Changer la couleur de fond
+            successMsg.style.display = 'block';
             document.body.style.backgroundColor = "#ffcce0";
-        }
+        }}
     </script>
 
 </body>
 </html>
 """
 
-# Hauteur 850 pour être sûr de prendre tout l'écran d'un mobile ou laptop standard
 components.html(html_code, height=850, scrolling=False)
