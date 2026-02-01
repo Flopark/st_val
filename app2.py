@@ -32,8 +32,7 @@ st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 # 📸 CONFIGURATION DES PHOTOS 📸
 # ==========================================
 
-# Liste tes fichiers qui sont directement à côté de app.py sur GitHub
-# Remplace par les noms EXACTS de tes photos (attention aux majuscules)
+# 👇 REMPLACE PAR LES NOMS EXACTS DE TES FICHIERS SUR GITHUB 👇
 LEFT_IMAGES_FILES = [
     "image.jpg", 
     "2.jpg",
@@ -46,21 +45,17 @@ RIGHT_IMAGES_FILES = [
     "6.jpg"
 ]
 
-# Fonction pour lire les images locales et les convertir en base64
+# Fonction pour lire les images locales
 def get_base64_image(image_filename):
     if not os.path.exists(image_filename):
-        # Si l'image n'est pas trouvée, on ne renvoie rien
         return None
-    
     with open(image_filename, "rb") as f:
         data = f.read()
-    
-    # On récupère l'extension (jpg, png...)
     ext = image_filename.split('.')[-1]
     encoded = base64.b64encode(data).decode()
     return f"data:image/{ext};base64,{encoded}"
 
-# Génération du HTML pour les balises <img>
+# Génération du HTML
 def generate_img_tags(filenames):
     html = ""
     for filename in filenames:
@@ -69,12 +64,11 @@ def generate_img_tags(filenames):
             html += f'<img src="{img_src}" class="side-photo">'
     return html
 
-# Préparation du contenu HTML des galeries
 left_html_content = generate_img_tags(LEFT_IMAGES_FILES)
 right_html_content = generate_img_tags(RIGHT_IMAGES_FILES)
 
 # ==========================================
-# LE CODE HTML/CSS/JS COMPLET
+# LE CODE HTML/CSS/JS
 # ==========================================
 
 html_code = f"""
@@ -83,67 +77,57 @@ html_code = f"""
 <head>
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
     <style>
-        /* Style global du corps de la page */
         body {{
-            background-color: #ffe4e1; /* Rose pastel */
-            height: 100vh; /* Prend toute la hauteur de la fenêtre */
+            background-color: #ffe4e1;
+            height: 100vh;
             margin: 0;
-            overflow: hidden; /* Empêche le scroll global de la page */
+            overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
             font-family: 'Pacifico', cursive;
-            user-select: none; /* Empêche la sélection de texte */
+            user-select: none;
         }}
 
-        /* --- STYLES DES GALERIES LATÉRALES --- */
+        /* --- STYLES GALERIES --- */
         .gallery {{
             position: fixed;
             top: 0;
             bottom: 0;
-            width: 220px; /* Largeur des colonnes photo */
+            width: 220px;
             display: flex;
             flex-direction: column;
-            gap: 20px; /* Espace entre les photos */
-            
-            /* CORRECTION ICI : Padding Haut Droite Bas Gauche */
-            /* On met 120px en bas pour être sûr que la dernière image ne soit pas coupée */
-            padding: 20px 20px 120px 20px; 
-            
-            overflow-y: auto; /* Permet le scroll si trop d'images */
-            z-index: 1; /* Derrière le jeu */
-            
-            /* Astuces pour cacher la barre de scroll tout en permettant de scroller */
-            scrollbar-width: none; /* Firefox */
-            -ms-overflow-style: none; /* IE/Edge */
+            gap: 20px;
+            /* Padding en bas pour ne pas couper la dernière image */
+            padding: 20px 20px 150px 20px; 
+            overflow-y: auto;
+            z-index: 1;
+            scrollbar-width: none; 
+            -ms-overflow-style: none;
         }}
-        /* Cache la barre de scroll sur Chrome/Safari */
         .gallery::-webkit-scrollbar {{ display: none; }}
 
         .gallery-left {{ left: 0; }}
         .gallery-right {{ right: 0; }}
 
-        /* Style des photos individuelles */
         .side-photo {{
             width: 100%;
             border-radius: 15px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             border: 4px solid white;
-            transition: transform 0.3s ease-in-out;
-            object-fit: cover; /* S'assure que l'image remplit bien le cadre */
+            transition: transform 0.3s;
+            object-fit: cover;
         }}
         
-        /* Effet au survol des photos */
         .side-photo:hover {{
             transform: scale(1.08) rotate(2deg);
             z-index: 2;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
         }}
 
-        /* --- STYLES DU JEU CENTRAL --- */
+        /* --- JEU CENTRAL --- */
         .game-container {{
             position: relative;
-            z-index: 10; /* Devant les photos */
+            z-index: 10;
             text-align: center;
             width: 100%;
             height: 100%;
@@ -156,78 +140,64 @@ html_code = f"""
         h1 {{
             color: #d65db1;
             font-size: 3.5rem;
-            text-shadow: 3px 3px #ffc1e3;
+            text-shadow: 2px 2px #ffc1e3;
             margin-bottom: 40px;
-            background-color: rgba(255, 235, 240, 0.9);
-            padding: 20px 50px;
-            border-radius: 60px;
-            box-shadow: 0 10px 30px rgba(214, 93, 177, 0.2);
+            background-color: rgba(255, 228, 225, 0.9);
+            padding: 20px 40px;
+            border-radius: 50px;
         }}
 
-        /* Style de base des boutons */
         button {{
             font-family: 'Quicksand', sans-serif;
             font-size: 1.6rem;
-            padding: 18px 45px;
+            padding: 15px 45px;
             border: none;
             border-radius: 50px;
             cursor: pointer;
             font-weight: 700;
-            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Effet rebond */
+            transition: all 0.2s;
         }}
 
-        /* Le bouton OUI */
         #yesBtn {{
-            background: linear-gradient(45deg, #ff69b4, #ff1493);
+            background-color: #ff69b4; 
             color: white;
-            box-shadow: 0 6px 20px rgba(255, 105, 180, 0.5);
-            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.5);
+            margin-bottom: 20px;
         }}
         
-        #yesBtn:hover {{ 
-            transform: scale(1.15) translateY(-5px); 
-            box-shadow: 0 10px 25px rgba(255, 105, 180, 0.7);
-        }}
+        #yesBtn:hover {{ transform: scale(1.1); background-color: #ff1493; }}
 
-        /* Le bouton NON (fuyant) */
         #noBtn {{
             background-color: white;
             color: #ff69b4;
             border: 3px solid #ff69b4;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            position: absolute; /* Nécessaire pour le mouvement */
+            position: relative; 
+            transition: all 0.1s ease;
         }}
 
-        /* Message de succès final */
         #success-message {{
-            display: none; /* Caché au départ */
+            display: none;
             color: #d65db1;
-            font-size: 2.8rem;
+            font-size: 2.5rem;
             text-align: center;
             background-color: rgba(255, 255, 255, 0.95);
-            padding: 50px 70px;
-            border-radius: 40px;
-            box-shadow: 0 20px 50px rgba(214, 93, 177, 0.3);
-            animation: popIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55); /* Animation d'apparition */
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            animation: fadeIn 1s;
         }}
 
-        /* Position initiale du bouton Non sous le bouton Oui */
         .initial-position {{ margin-top: 20px; }}
 
-        /* Animation d'apparition du message */
-        @keyframes popIn {{
-            0% {{ transform: scale(0.5); opacity: 0; }}
-            80% {{ transform: scale(1.05); opacity: 1; }}
-            100% {{ transform: scale(1); }}
+        @keyframes fadeIn {{
+            from {{ opacity: 0; transform: translateY(20px); }}
+            to {{ opacity: 1; transform: translateY(0); }}
         }}
 
-        /* --- ADAPTATION MOBILE --- */
-        /* Sur les écrans de moins de 950px de large (téléphones, petites tablettes) */
+        /* MOBILE */
         @media (max-width: 950px) {{
-            .gallery {{ display: none; }} /* On cache les photos */
-            h1 {{ font-size: 2.2rem; padding: 15px 30px; }}
-            button {{ font-size: 1.3rem; padding: 15px 35px; }}
-            #success-message {{ font-size: 2rem; padding: 30px; }}
+            .gallery {{ display: none; }}
+            h1 {{ font-size: 2rem; padding: 10px 20px; }}
         }}
 
     </style>
@@ -239,6 +209,7 @@ html_code = f"""
     </div>
 
     <div class="game-container">
+        
         <h1 id="main-text">Would you be my Valentine? 🩶</h1>
 
         <button id="yesBtn" onclick="sheSaidYes()">OUIII 🩶</button>
@@ -251,11 +222,14 @@ html_code = f"""
             MOooohh moi aussi je t'aime mme chaton ! 💖💖<br>
             <span style="font-size: 1.5rem">(De toutes façon tu n'avais pas le choix) </span>
         </div>
+
     </div>
 
     <div class="gallery gallery-right">
         {right_html_content}
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <script>
         const noBtn = document.getElementById('noBtn');
@@ -265,75 +239,62 @@ html_code = f"""
         
         let firstMove = true;
 
-        // Fonction pour faire bouger le bouton NON
         function moveButton() {{
-            // Au premier mouvement, on le passe en position 'fixed' pour qu'il puisse aller partout sur l'écran
+            // Au premier survol, on change le mode de positionnement
             if (firstMove) {{
-                noBtn.style.position = 'fixed';
-                noBtn.parentElement.style.display = 'none'; // On cache le conteneur initial
-                document.body.appendChild(noBtn); // On déplace le bouton directement dans le body
+                noBtn.style.position = 'fixed'; // Permet de bouger partout sur l'écran
                 firstMove = false;
             }}
 
-            // Dimensions de la fenêtre et du bouton
             const windowWidth = window.innerWidth;
             const windowHeight = window.innerHeight;
             const btnWidth = noBtn.offsetWidth;
             const btnHeight = noBtn.offsetHeight;
 
-            // Marge de sécurité latérale pour éviter qu'il n'aille SUR les photos
-            // Si écran large (>950px) marge de 250px, sinon marge de 20px
+            // Zones interdites (les galeries)
+            // Si écran large, on laisse 250px de chaque côté, sinon 20px
             let sideMargin = windowWidth > 950 ? 250 : 20;
 
-            // Calcul des limites maximales
             const maxX = windowWidth - btnWidth - sideMargin;
-            const maxY = windowHeight - btnHeight - 20; // Marge de 20px en bas
+            const maxY = windowHeight - btnHeight - 20;
+            const minX = sideMargin;
 
-            const minX = sideMargin; 
-
-            // Génération de positions aléatoires dans les limites
+            // Calcul aléatoire sûr
             const randomX = Math.max(minX, Math.random() * maxX);
-            const randomY = Math.max(20, Math.random() * maxY); // Marge de 20px en haut
+            const randomY = Math.max(20, Math.random() * maxY);
 
-            // Application des nouvelles coordonnées
+            // Appliquer la nouvelle position
             noBtn.style.left = randomX + 'px';
             noBtn.style.top = randomY + 'px';
         }}
 
-        // Fonction déclenchée quand elle clique sur OUI
         function sheSaidYes() {{
-            // On cache les boutons et le titre
+            // On cache les boutons
             noBtn.style.display = 'none';
             yesBtn.style.display = 'none';
             mainText.style.display = 'none';
             
-            // On affiche le message de succès
+            // On affiche le message
             successMsg.style.display = 'block';
-            
-            // On change la couleur de fond pour l'ambiance
             document.body.style.backgroundColor = "#ffdae9";
-            
-            // Lancement de confettis (si la librairie est chargée, sinon ne fait rien)
+
+            // Confettis !
             try {{
                 confetti({{
                     particleCount: 150,
-                    spread: 100,
+                    spread: 70,
                     origin: {{ y: 0.6 }},
                     colors: ['#ff69b4', '#ff1493', '#ffffff']
                 }});
-            }} catch (e) {{ console.log("Confetti not loaded"); }}
+            }} catch (e) {{}}
         }}
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 </body>
 </html>
 """
 
-# Affichage du composant HTML
-# Height augmenté à 900 pour être sûr de bien couvrir les grands écrans
 components.html(html_code, height=900, scrolling=False)
-
 
 
 
