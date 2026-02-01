@@ -47,17 +47,16 @@ RIGHT_IMAGES_FILES = [
 
 # Fonction pour convertir l'image locale en code base64 pour le HTML
 def get_base64_image(image_filename):
-    folder = "photos"  # Le nom de ton dossier
-    file_path = os.path.join(folder, image_filename)
+    # On a supprimé la référence au dossier "photos"
     
-    # Vérifie si le fichier existe pour éviter les erreurs
-    if not os.path.exists(file_path):
+    # Vérifie si le fichier existe
+    if not os.path.exists(image_filename):
         return None
     
-    with open(file_path, "rb") as f:
+    with open(image_filename, "rb") as f:
         data = f.read()
     
-    # On devine l'extension pour le format
+    # On devine l'extension
     ext = image_filename.split('.')[-1]
     encoded = base64.b64encode(data).decode()
     return f"data:image/{ext};base64,{encoded}"
@@ -286,4 +285,5 @@ html_code = f"""
 """
 
 components.html(html_code, height=850, scrolling=False)
+
 
