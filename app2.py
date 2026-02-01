@@ -11,7 +11,7 @@ import os
 
 # Configuration de la page
 st.set_page_config(
-    page_title="Valentine ?",
+    page_title="mme Chaton valentine ?",
     page_icon="💌",
     layout="wide",
     initial_sidebar_state="collapsed"
@@ -295,6 +295,7 @@ html_code = f"""
 """
 
 components.html(html_code, height=900, scrolling=False)
+
 
 
 
