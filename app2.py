@@ -213,17 +213,17 @@ html_code = f"""
     </div>
 
     <div class="game-container">
-        <h1 id="main-text">Would you be my Valentine? 💖</h1>
+        <h1 id="main-text">Would you be my Valentine? 🩶 </h1>
 
-        <button id="yesBtn" onclick="sheSaidYes()">YES 🥰</button>
+        <button id="yesBtn" onclick="sheSaidYes()">OUIII </button>
         
         <div class="initial-position">
-            <button id="noBtn" onmouseover="moveButton()" onclick="moveButton()">NO 😢</button>
+            <button id="noBtn" onmouseover="moveButton()" onclick="moveButton()">non </button>
         </div>
 
         <div id="success-message">
-            Yayyy !! 💖 Je t'aime !<br>
-            <span style="font-size: 1.5rem">Je savais que tu dirais oui 😎</span>
+            MOooohh aussi je t'aime Me chaton ! 💖💖<br>
+            <span style="font-size: 1.5rem">(De toutes façon tu n'avais pas le choix) </span>
         </div>
     </div>
 
@@ -285,5 +285,6 @@ html_code = f"""
 """
 
 components.html(html_code, height=850, scrolling=False)
+
 
 
