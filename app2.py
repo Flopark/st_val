@@ -32,7 +32,7 @@ st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 # 📸 CONFIGURATION DES PHOTOS 📸
 # ==========================================
 
-# 👇 J'ai bien gardé tes noms de fichiers 👇
+# 👇 REMPLACE PAR LES NOMS EXACTS DE TES FICHIERS SUR GITHUB 👇
 LEFT_IMAGES_FILES = [
     "1.jpg", 
     "2.jpg",
@@ -68,7 +68,7 @@ left_html_content = generate_img_tags(LEFT_IMAGES_FILES)
 right_html_content = generate_img_tags(RIGHT_IMAGES_FILES)
 
 # ==========================================
-# LE CODE HTML/CSS/JS ADAPTÉ IPHONE
+# LE CODE HTML/CSS/JS ADAPTÉ IPHONE (VERSION CORRIGÉE)
 # ==========================================
 
 html_code = f"""
@@ -85,7 +85,7 @@ html_code = f"""
         body {{
             background-color: #ffe4e1;
             height: 100vh; /* Fallback */
-            height: 100dvh; /* Dynamic viewport pour mobile (gère la barre d'adresse safari) */
+            height: 100dvh; /* Dynamic viewport : s'adapte parfaitement à l'écran mobile réel */
             margin: 0;
             overflow: hidden;
             display: flex;
@@ -93,8 +93,8 @@ html_code = f"""
             align-items: center;
             font-family: 'Pacifico', cursive;
             user-select: none;
-            -webkit-user-select: none; /* Spécifique Safari/iOS */
-            touch-action: none; /* Empêche le zoom/scroll tactiles globaux */
+            -webkit-user-select: none; 
+            touch-action: none;
         }}
 
         /* --- STYLES GALERIES (Version PC par défaut) --- */
@@ -141,7 +141,7 @@ html_code = f"""
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 10px; /* Padding réduit */
         }}
 
         h1 {{
@@ -163,7 +163,7 @@ html_code = f"""
             border-radius: 50px;
             cursor: pointer;
             font-weight: 700;
-            -webkit-tap-highlight-color: transparent; /* Enlève le flash bleu sur mobile */
+            -webkit-tap-highlight-color: transparent;
         }}
 
         #yesBtn {{
@@ -179,7 +179,7 @@ html_code = f"""
             color: #ff69b4;
             border: 2px solid #ff69b4;
             position: relative; 
-            transition: top 0.15s, left 0.15s; /* Transition fluide */
+            transition: top 0.15s, left 0.15s;
             z-index: 20;
         }}
 
@@ -206,39 +206,44 @@ html_code = f"""
         /* ========================================== */
         @media (max-width: 900px) {{
             body {{
-                flex-direction: column; /* On empile verticalement */
+                flex-direction: column;
             }}
 
-            /* Transformer les colonnes latérales en bandeaux horizontaux */
+            /* Bandeaux horizontaux */
             .gallery {{
-                position: relative; /* Plus de fixed */
+                position: relative;
                 width: 100%;
-                height: 110px; /* Hauteur fixe pour le bandeau */
+                height: 95px; /* Hauteur réduite pour gagner de la place */
                 flex-direction: row; /* Alignement horizontal */
+                
+                /* ICI : On centre les photos pour éviter le vide à droite */
+                justify-content: center; 
+                align-items: center;
+                
                 top: auto; bottom: auto; left: auto; right: auto;
-                padding: 10px;
-                overflow-x: auto; /* Scroll horizontal */
+                padding: 5px;
+                overflow-x: auto;
                 overflow-y: hidden;
-                background-color: rgba(255,255,255,0.3);
-                gap: 10px;
+                background-color: rgba(255,255,255,0.4);
+                gap: 15px; /* Espace propre entre les photos */
             }}
 
-            /* Ordre d'affichage : Galerie 1 -> Jeu -> Galerie 2 */
             .gallery-left {{ order: 1; }}
-            .game-container {{ order: 2; flex: 1; }} /* Le jeu prend toute la place dispo au milieu */
+            .game-container {{ order: 2; flex: 1; }} 
             .gallery-right {{ order: 3; }}
 
             .side-photo {{
-                width: 80px; /* Photos plus petites */
-                height: 80px;
-                flex-shrink: 0; /* Empêche l'écrasement */
+                width: 75px; /* Un tout petit peu plus petit */
+                height: 75px;
+                flex-shrink: 0;
                 border-width: 2px;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             }}
 
             h1 {{
-                font-size: 1.8rem; /* Titre plus petit */
-                margin-bottom: 20px;
-                padding: 10px;
+                font-size: 1.8rem;
+                margin-bottom: 15px;
+                padding: 10px 20px;
             }}
 
             button {{
@@ -247,8 +252,9 @@ html_code = f"""
             }}
             
             #success-message {{
-                font-size: 1.4rem;
+                font-size: 1.3rem;
                 padding: 20px;
+                margin-top: -20px; /* Remonte un peu le message */
             }}
         }}
     </style>
@@ -291,9 +297,8 @@ html_code = f"""
         
         let firstMove = true;
 
-        // Fonction spéciale pour le tactile (empêche le clic)
         function moveButtonTouch(e) {{
-            e.preventDefault(); // Empêche le "click" de se produire
+            e.preventDefault(); 
             moveButton();
         }}
 
@@ -303,24 +308,18 @@ html_code = f"""
                 firstMove = false;
             }}
 
-            // CALCUL INTELLIGENT DE LA ZONE DISPONIBLE
-            // Sur mobile, cela correspond à l'espace entre les deux galeries photos
-            
             const areaRect = gameArea.getBoundingClientRect();
             const btnWidth = noBtn.offsetWidth;
             const btnHeight = noBtn.offsetHeight;
 
             // Marges de sécurité
-            const padding = 20;
+            const padding = 15;
 
-            // Calcul des positions max relatives à la fenêtre
-            // areaRect.top est le début de la zone de jeu (sous la galerie du haut)
             const minX = areaRect.left + padding;
             const maxX = areaRect.right - btnWidth - padding;
             const minY = areaRect.top + padding;
             const maxY = areaRect.bottom - btnHeight - padding;
 
-            // Génération aléatoire dans ces bornes
             const randomX = Math.random() * (maxX - minX) + minX;
             const randomY = Math.random() * (maxY - minY) + minY;
 
