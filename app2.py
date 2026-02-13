@@ -117,7 +117,7 @@ html_code = f"""
         .gallery-right {{ right: 0; }}
 
         .side-photo {{
-            width: 100%;
+            width: 90%;
             height: auto;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
@@ -355,6 +355,7 @@ html_code = f"""
 """
 
 components.html(html_code, height=700, scrolling=False)
+
 
 
 
