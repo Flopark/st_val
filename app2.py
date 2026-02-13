@@ -32,7 +32,7 @@ st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 # 📸 CONFIGURATION DES PHOTOS 📸
 # ==========================================
 
-# 👇 REMPLACE PAR LES NOMS EXACTS DE TES FICHIERS SUR GITHUB 👇
+# 👇 J'ai bien gardé tes noms de fichiers 👇
 LEFT_IMAGES_FILES = [
     "1.jpg", 
     "2.jpg",
@@ -68,18 +68,24 @@ left_html_content = generate_img_tags(LEFT_IMAGES_FILES)
 right_html_content = generate_img_tags(RIGHT_IMAGES_FILES)
 
 # ==========================================
-# LE CODE HTML/CSS/JS
+# LE CODE HTML/CSS/JS ADAPTÉ IPHONE
 # ==========================================
 
 html_code = f"""
 <!DOCTYPE html>
 <html>
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
     <style>
+        * {{
+            box-sizing: border-box;
+        }}
+        
         body {{
             background-color: #ffe4e1;
-            height: 100vh;
+            height: 100vh; /* Fallback */
+            height: 100dvh; /* Dynamic viewport pour mobile (gère la barre d'adresse safari) */
             margin: 0;
             overflow: hidden;
             display: flex;
@@ -87,9 +93,11 @@ html_code = f"""
             align-items: center;
             font-family: 'Pacifico', cursive;
             user-select: none;
+            -webkit-user-select: none; /* Spécifique Safari/iOS */
+            touch-action: none; /* Empêche le zoom/scroll tactiles globaux */
         }}
 
-        /* --- STYLES GALERIES --- */
+        /* --- STYLES GALERIES (Version PC par défaut) --- */
         .gallery {{
             position: fixed;
             top: 0;
@@ -98,12 +106,10 @@ html_code = f"""
             display: flex;
             flex-direction: column;
             gap: 20px;
-            /* Padding en bas pour ne pas couper la dernière image */
-            padding: 20px 20px 150px 20px; 
+            padding: 20px;
             overflow-y: auto;
             z-index: 1;
             scrollbar-width: none; 
-            -ms-overflow-style: none;
         }}
         .gallery::-webkit-scrollbar {{ display: none; }}
 
@@ -112,50 +118,52 @@ html_code = f"""
 
         .side-photo {{
             width: 100%;
-            border-radius: 15px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            border: 4px solid white;
-            transition: transform 0.3s;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border: 3px solid white;
             object-fit: cover;
-        }}
-        
-        .side-photo:hover {{
-            transform: scale(1.08) rotate(2deg);
-            z-index: 2;
+            transition: transform 0.3s;
         }}
 
+        .side-photo:hover {{
+            transform: scale(1.05);
+            z-index: 2;
+        }}
+        
         /* --- JEU CENTRAL --- */
         .game-container {{
             position: relative;
             z-index: 10;
-            text-align: center;
             width: 100%;
             height: 100%;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            padding: 20px;
         }}
 
         h1 {{
             color: #d65db1;
-            font-size: 3.5rem;
+            font-size: 3rem;
             text-shadow: 2px 2px #ffc1e3;
-            margin-bottom: 40px;
-            background-color: rgba(255, 228, 225, 0.9);
-            padding: 20px 40px;
-            border-radius: 50px;
+            margin-bottom: 30px;
+            text-align: center;
+            background-color: rgba(255, 228, 225, 0.85);
+            border-radius: 30px;
+            padding: 15px 30px;
         }}
 
         button {{
             font-family: 'Quicksand', sans-serif;
-            font-size: 1.6rem;
-            padding: 15px 45px;
+            font-size: 1.5rem;
+            padding: 15px 35px;
             border: none;
             border-radius: 50px;
             cursor: pointer;
             font-weight: 700;
-            transition: all 0.2s;
+            -webkit-tap-highlight-color: transparent; /* Enlève le flash bleu sur mobile */
         }}
 
         #yesBtn {{
@@ -163,43 +171,86 @@ html_code = f"""
             color: white;
             box-shadow: 0 4px 15px rgba(255, 105, 180, 0.5);
             margin-bottom: 20px;
+            z-index: 20;
         }}
-        
-        #yesBtn:hover {{ transform: scale(1.1); background-color: #ff1493; }}
 
         #noBtn {{
             background-color: white;
             color: #ff69b4;
-            border: 3px solid #ff69b4;
+            border: 2px solid #ff69b4;
             position: relative; 
-            transition: all 0.1s ease;
+            transition: top 0.15s, left 0.15s; /* Transition fluide */
+            z-index: 20;
         }}
 
         #success-message {{
             display: none;
             color: #d65db1;
-            font-size: 2.5rem;
+            font-size: 1.8rem;
             text-align: center;
             background-color: rgba(255, 255, 255, 0.95);
-            padding: 40px;
-            border-radius: 30px;
+            padding: 30px;
+            border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.15);
             animation: fadeIn 1s;
+            max-width: 90%;
         }}
-
-        .initial-position {{ margin-top: 20px; }}
 
         @keyframes fadeIn {{
             from {{ opacity: 0; transform: translateY(20px); }}
             to {{ opacity: 1; transform: translateY(0); }}
         }}
 
-        /* MOBILE */
-        @media (max-width: 950px) {{
-            .gallery {{ display: none; }}
-            h1 {{ font-size: 2rem; padding: 10px 20px; }}
-        }}
+        /* ========================================== */
+        /* 📱 RESPONSIVE IPHONE / MOBILE 📱           */
+        /* ========================================== */
+        @media (max-width: 900px) {{
+            body {{
+                flex-direction: column; /* On empile verticalement */
+            }}
 
+            /* Transformer les colonnes latérales en bandeaux horizontaux */
+            .gallery {{
+                position: relative; /* Plus de fixed */
+                width: 100%;
+                height: 110px; /* Hauteur fixe pour le bandeau */
+                flex-direction: row; /* Alignement horizontal */
+                top: auto; bottom: auto; left: auto; right: auto;
+                padding: 10px;
+                overflow-x: auto; /* Scroll horizontal */
+                overflow-y: hidden;
+                background-color: rgba(255,255,255,0.3);
+                gap: 10px;
+            }}
+
+            /* Ordre d'affichage : Galerie 1 -> Jeu -> Galerie 2 */
+            .gallery-left {{ order: 1; }}
+            .game-container {{ order: 2; flex: 1; }} /* Le jeu prend toute la place dispo au milieu */
+            .gallery-right {{ order: 3; }}
+
+            .side-photo {{
+                width: 80px; /* Photos plus petites */
+                height: 80px;
+                flex-shrink: 0; /* Empêche l'écrasement */
+                border-width: 2px;
+            }}
+
+            h1 {{
+                font-size: 1.8rem; /* Titre plus petit */
+                margin-bottom: 20px;
+                padding: 10px;
+            }}
+
+            button {{
+                font-size: 1.2rem;
+                padding: 12px 30px;
+            }}
+            
+            #success-message {{
+                font-size: 1.4rem;
+                padding: 20px;
+            }}
+        }}
     </style>
 </head>
 <body>
@@ -208,19 +259,19 @@ html_code = f"""
         {left_html_content}
     </div>
 
-    <div class="game-container">
+    <div class="game-container" id="gameArea">
         
         <h1 id="main-text">Would you be my Valentine? 🩶</h1>
 
         <button id="yesBtn" onclick="sheSaidYes()">OUIII 🩶</button>
         
         <div class="initial-position">
-            <button id="noBtn" onmouseover="moveButton()" ontouchstart="moveButton()"> non </button>
+            <button id="noBtn" onmouseover="moveButton()" ontouchstart="moveButtonTouch(event)"> non </button>
         </div>
 
         <div id="success-message">
             MOooohh moi aussi je t'aime mme chaton ! 💖💖<br>
-            <span style="font-size: 1.5rem">(De toute façon tu n'avais pas le choix) </span>
+            <span style="font-size: 1.2rem; display:block; margin-top:10px">(De toute façon tu n'avais pas le choix) </span>
         </div>
 
     </div>
@@ -236,56 +287,66 @@ html_code = f"""
         const yesBtn = document.getElementById('yesBtn');
         const mainText = document.getElementById('main-text');
         const successMsg = document.getElementById('success-message');
+        const gameArea = document.getElementById('gameArea');
         
         let firstMove = true;
 
+        // Fonction spéciale pour le tactile (empêche le clic)
+        function moveButtonTouch(e) {{
+            e.preventDefault(); // Empêche le "click" de se produire
+            moveButton();
+        }}
+
         function moveButton() {{
-            // Au premier survol, on change le mode de positionnement
             if (firstMove) {{
-                noBtn.style.position = 'fixed'; // Permet de bouger partout sur l'écran
+                noBtn.style.position = 'fixed'; 
                 firstMove = false;
             }}
 
-            const windowWidth = window.innerWidth;
-            const windowHeight = window.innerHeight;
+            // CALCUL INTELLIGENT DE LA ZONE DISPONIBLE
+            // Sur mobile, cela correspond à l'espace entre les deux galeries photos
+            
+            const areaRect = gameArea.getBoundingClientRect();
             const btnWidth = noBtn.offsetWidth;
             const btnHeight = noBtn.offsetHeight;
 
-            // Zones interdites (les galeries)
-            // Si écran large, on laisse 250px de chaque côté, sinon 20px
-            let sideMargin = windowWidth > 950 ? 250 : 20;
+            // Marges de sécurité
+            const padding = 20;
 
-            const maxX = windowWidth - btnWidth - sideMargin;
-            const maxY = windowHeight - btnHeight - 20;
-            const minX = sideMargin;
+            // Calcul des positions max relatives à la fenêtre
+            // areaRect.top est le début de la zone de jeu (sous la galerie du haut)
+            const minX = areaRect.left + padding;
+            const maxX = areaRect.right - btnWidth - padding;
+            const minY = areaRect.top + padding;
+            const maxY = areaRect.bottom - btnHeight - padding;
 
-            // Calcul aléatoire sûr
-            const randomX = Math.max(minX, Math.random() * maxX);
-            const randomY = Math.max(20, Math.random() * maxY);
+            // Génération aléatoire dans ces bornes
+            const randomX = Math.random() * (maxX - minX) + minX;
+            const randomY = Math.random() * (maxY - minY) + minY;
 
-            // Appliquer la nouvelle position
             noBtn.style.left = randomX + 'px';
             noBtn.style.top = randomY + 'px';
         }}
 
         function sheSaidYes() {{
-            // On cache les boutons
             noBtn.style.display = 'none';
             yesBtn.style.display = 'none';
             mainText.style.display = 'none';
             
-            // On affiche le message
             successMsg.style.display = 'block';
             document.body.style.backgroundColor = "#ffdae9";
 
-            // Confettis !
             try {{
-                confetti({{
-                    particleCount: 150,
-                    spread: 70,
-                    origin: {{ y: 0.6 }},
-                    colors: ['#ff69b4', '#ff1493', '#ffffff']
-                }});
+                var duration = 3000;
+                var animationEnd = Date.now() + duration;
+                var defaults = {{ startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 }};
+
+                var interval = setInterval(function() {{
+                    var timeLeft = animationEnd - Date.now();
+                    if (timeLeft <= 0) {{ return clearInterval(interval); }}
+                    var particleCount = 50 * (timeLeft / duration);
+                    confetti(Object.assign({{}}, defaults, {{ particleCount, origin: {{ x: Math.random(), y: Math.random() - 0.2 }} }}));
+                }}, 250);
             }} catch (e) {{}}
         }}
     </script>
