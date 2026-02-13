@@ -34,7 +34,7 @@ st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 # 👇 REMPLACE PAR LES NOMS EXACTS DE TES FICHIERS SUR GITHUB 👇
 LEFT_IMAGES_FILES = [
-    "image.jpg", 
+    "1.jpg", 
     "2.jpg",
     "3.jpg"
 ]
@@ -295,6 +295,7 @@ html_code = f"""
 """
 
 components.html(html_code, height=900, scrolling=False)
+
 
 
 
