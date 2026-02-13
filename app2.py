@@ -354,7 +354,8 @@ html_code = f"""
 </html>
 """
 
-components.html(html_code, height=500, scrolling=False)
+components.html(html_code, height=700, scrolling=False)
+
 
 
 
