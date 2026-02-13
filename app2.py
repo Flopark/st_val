@@ -136,7 +136,7 @@ html_code = f"""
             position: relative;
             z-index: 10;
             width: 100%;
-            height: 100%;
+            height: 80%;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -213,7 +213,7 @@ html_code = f"""
             .gallery {{
                 position: relative;
                 width: 100%;
-                height: 95px; /* Hauteur réduite pour gagner de la place */
+                height: 150px; /* Hauteur réduite pour gagner de la place */
                 flex-direction: row; /* Alignement horizontal */
                 
                 /* ICI : On centre les photos pour éviter le vide à droite */
@@ -234,7 +234,7 @@ html_code = f"""
 
             .side-photo {{
                 width: 75px; /* Un tout petit peu plus petit */
-                height: 75px;
+                height: 90px;
                 flex-shrink: 0;
                 border-width: 2px;
                 box-shadow: 0 2px 5px rgba(0,0,0,0.1);
@@ -354,7 +354,8 @@ html_code = f"""
 </html>
 """
 
-components.html(html_code, height=900, scrolling=False)
+components.html(html_code, height=500, scrolling=False)
+
 
 
 
